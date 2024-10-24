@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+#gameCanvas {
+  background-color: lightgray; /* Background color for the canvas */
+  border: 2px solid black; /* Optional border */
+  display: block; /* Important for positioning */
+  margin: 20px auto; /* Centers the canvas */
+}
+
+#cube {
+  background-color: green;
+  position: absolute; /* Allows absolute positioning for shadow */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow */
+}
+</style>
 </head>
 <body>
 <canvas id="gameCanvas" width="800" height="600"></canvas>
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const cube = document.createElement('div');
+cube.id = 'cube';
+document.body.appendChild(cube); // Add the cube div to the body
 
 let cubeX = 50;
 let cubeY = 50;
@@ -14,33 +32,29 @@ let cubeSize = 50;
 let dx = 0;
 let dy = 0;
 let speed = 5;
-let acceleration = 0.1; // Adjust for desired acceleration
+let acceleration = 0.1;
 
 
 function drawCube() {
-    ctx.fillStyle = 'green';
-    ctx.fillRect(cubeX, cubeY, cubeSize, cubeSize);
+  cube.style.left = cubeX + 'px';
+  cube.style.top = cubeY + 'px';
+  cube.style.width = cubeSize + 'px';
+  cube.style.height = cubeSize + 'px';
 }
 
-
 function update() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  dx *= 0.9;
+  dy *= 0.9;
+  cubeX += dx;
+  cubeY += dy;
 
-    // Apply inertia (crucial part)
-    dx *= 0.9; // Deceleration factor (adjust for desired inertia)
-    dy *= 0.9;
-
-    cubeX += dx;
-    cubeY += dy;
-
-    // Boundary conditions
-    if (cubeX < 0 || cubeX + cubeSize > canvas.width) {
-        dx = -dx * 0.9; // Reverse horizontal direction with some inertia
-    }
-    if (cubeY < 0 || cubeY + cubeSize > canvas.height) {
-        dy = -dy * 0.9; // Reverse vertical direction with some inertia
-    }
-
+  // Boundary conditions
+  if (cubeX < 0 || cubeX + cubeSize > canvas.width) {
+    dx = -dx * 0.9;
+  }
+  if (cubeY < 0 || cubeY + cubeSize > canvas.height) {
+    dy = -dy * 0.9;
+  }
     drawCube();
 }
 
@@ -76,7 +90,7 @@ document.addEventListener('keyup', (event) => {
 });
 
 
-setInterval(update, 20); // Update every 20 milliseconds
+setInterval(update, 20); 
 </script>
 </body>
 </html>
