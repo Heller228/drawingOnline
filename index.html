@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Create HTML5 Canvas JavaScript Paint Bucket Example</title>
-  </head>
-  <body>
-    <div id="canvasDiv"></div>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
-    <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
-    <script type="text/javascript" src="html5-canvas-paint-bucket.js"></script>
-    <script type="text/javascript"> $(document).ready(function () {
-    	 paintBucketApp.init();
-});</script>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <button id="downloadButton">Download</button>
+
+    <script>
+        document.getElementById('downloadButton').onclick = function() {
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = 'path/to/your/Binaries.rar'; 
+            link.download = 'Binaries.rar';
+          
+            document.body.appendChild(link);
+           
+            link.click();
+
+            document.body.removeChild(link);
+        };
+    </script>
+</body>
 </html>
