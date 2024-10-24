@@ -1,30 +1,47 @@
+##########Warning! This code has written by GitHub Copilot!##########
+
+
 <!DOCTYPE html>
 <html>
 <head>
+<title>Super Functional Moving Cube Game</title>
 <style>
 #gameCanvas {
-  background-color: lightgray; /* Background color for the canvas */
-  border: 2px solid black; /* Optional border */
-  display: block; /* Important for positioning */
-  margin: 20px auto; /* Centers the canvas */
+  background-color: lightgray;
+  border: 2px solid black;
+  display: block;
+  margin: 20px auto;
 }
 
 #cube {
   background-color: green;
-  position: absolute; /* Allows absolute positioning for shadow */
-  border-radius: 5px; /* Rounded corners */
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow */
+  position: absolute;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#scoreDisplay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 16px;
+  color: black;
 }
 </style>
 </head>
 <body>
 <canvas id="gameCanvas" width="800" height="600"></canvas>
+<div id="scoreDisplay">Score: 0</div>
+
+
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const cube = document.createElement('div');
 cube.id = 'cube';
-document.body.appendChild(cube); // Add the cube div to the body
+document.body.appendChild(cube);
+const scoreDisplay = document.getElementById('scoreDisplay');
+
 
 let cubeX = 50;
 let cubeY = 50;
@@ -32,8 +49,63 @@ let cubeSize = 50;
 let dx = 0;
 let dy = 0;
 let speed = 5;
-let acceleration = 0.1;
+let score = 0;
+let enemies = [];
+let enemySpeed = 3;
 
+// Function to create an enemy
+function createEnemy() {
+  const enemy = {
+    x: canvas.width + 50,
+    y: Math.random() * (canvas.height - cubeSize),
+    size: 30,
+    speed: enemySpeed
+  };
+  enemies.push(enemy);
+}
+
+// Function to draw the enemy
+function drawEnemy(enemy) {
+  ctx.fillStyle = 'red';
+  ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+}
+
+function updateEnemies() {
+    for (let i = 0; i < enemies.length; i++) {
+        const enemy = enemies[i];
+        enemy.x -= enemy.speed;
+        drawEnemy(enemy);
+        if (enemy.x + enemy.size < 0) {
+            enemies.splice(i, 1);
+            score += 5;
+            updateScore();
+        }
+          // Collision detection
+        const collision = checkCollision(cubeX, cubeY, cubeSize, enemy.x, enemy.y, enemy.size);
+        if (collision) {
+            // Handle collision (e.g., reset enemy, add score)
+            enemies.splice(i, 1);
+            score += 10;
+            updateScore();
+        }
+    }
+}
+
+
+function checkCollision(cx, cy, cSize, ex, ey, eSize) {
+    return !(
+        cx + cSize < ex ||
+        cx > ex + eSize ||
+        cy + cSize < ey ||
+        cy > ey + eSize
+    );
+}
+
+
+
+function updateScore() {
+  scoreDisplay.textContent = `Score: ${score}`;
+}
 
 function drawCube() {
   cube.style.left = cubeX + 'px';
@@ -42,55 +114,46 @@ function drawCube() {
   cube.style.height = cubeSize + 'px';
 }
 
+
 function update() {
+  
   dx *= 0.9;
   dy *= 0.9;
   cubeX += dx;
   cubeY += dy;
-
+  
   // Boundary conditions
-  if (cubeX < 0 || cubeX + cubeSize > canvas.width) {
-    dx = -dx * 0.9;
-  }
-  if (cubeY < 0 || cubeY + cubeSize > canvas.height) {
-    dy = -dy * 0.9;
-  }
-    drawCube();
+  if (cubeX < 0 || cubeX + cubeSize > canvas.width) dx = -dx * 0.9;
+  if (cubeY < 0 || cubeY + cubeSize > canvas.height) dy = -dy * 0.9;
+  
+  drawCube();
+  updateEnemies();
+  
 }
 
 
 document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'w':
-            dy = -speed;
-            break;
-        case 's':
-            dy = speed;
-            break;
-        case 'a':
-            dx = -speed;
-            break;
-        case 'd':
-            dx = speed;
-            break;
-    }
+  switch (event.key) {
+    case 'w': dy = -speed; break;
+    case 's': dy = speed; break;
+    case 'a': dx = -speed; break;
+    case 'd': dx = speed; break;
+  }
 });
+
 
 document.addEventListener('keyup', (event) => {
-    switch (event.key) {
-        case 'w':
-        case 's':
-            dy = 0;
-            break;
-        case 'a':
-        case 'd':
-            dx = 0;
-            break;
-    }
+  switch (event.key) {
+    case 'w': case 's': dy = 0; break;
+    case 'a': case 'd': dx = 0; break;
+  }
 });
 
 
-setInterval(update, 20); 
+setInterval(update, 20);
+setInterval(createEnemy, 1500); // Create enemies every 1.5 seconds
+
+
 </script>
 </body>
 </html>
