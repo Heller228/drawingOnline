@@ -77,7 +77,7 @@ var paintBucketApp = (function () {
 			if (curColor === color) {
 				context.drawImage(swatchImage, 0, 0, 59, swatchImageHeight, x, y, 59, swatchImageHeight);
 			} else {
-				context.drawImage(swatchImage, x, y, swatchImageWidth, swatchImageHeight);
+				alert("This file cannot be started locally.")
 			}
 		},
 
